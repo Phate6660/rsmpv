@@ -20,13 +20,13 @@ SUBCOMMANDS:
     help     Prints this message or the help of the given subcommand(s)
     pause    Pause the current media in mpv
     play     Play the current media in mpv
-    set      Set different options for mpv.
+    set      Set different options for mpv
 ```
 
 `$ rsmpv set -h`
 ```
 rsmpv-set 
-Set different options for mpv.
+Set different options for mpv
 
 USAGE:
     rsmpv set [OPTIONS]
@@ -36,8 +36,9 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --position <PERCENTAGE>    Set the percentage of the media playback progress.
-        --volume <PERCENTAGE>      Set the volume.
+    -l, --loop <y/n>               Enable or disable playback looping
+    -p, --position <PERCENTAGE>    Set the position of media playback progress
+    -v, --volume <PERCENTAGE>      Set the volume
 ```
 
 ## Roadmap

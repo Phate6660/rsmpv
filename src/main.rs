@@ -10,15 +10,23 @@ fn main() {
         .subcommand(SubCommand::with_name("play")
             .about("Play the current media in mpv"))
         .subcommand(SubCommand::with_name("set")
-            .about("Set different options for mpv.")
+            .about("Set different options for mpv")
+            .arg(Arg::with_name("loop")
+                .short("l")
+                .long("loop")
+                .help("Enable or disable playback looping")
+                .value_name("y/n")
+                .takes_value(true))
             .arg(Arg::with_name("position")
+                .short("p")
                 .long("position")
-                .help("Set the position media playback progress.")
+                .help("Set the position of media playback progress")
                 .value_name("PERCENTAGE")
                 .takes_value(true))
             .arg(Arg::with_name("volume")
+                .short("v")
                 .long("volume")
-                .help("Set the volume.")
+                .help("Set the volume")
                 .value_name("PERCENTAGE")
                 .takes_value(true)))
         .get_matches();
@@ -30,7 +38,12 @@ fn main() {
         run_mpv_command(&mpv, "set_property", &["pause", "yes"])
             .expect("Could not pause mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
     } else if let Some(matches) = matches.subcommand_matches("set") {
-        if matches.is_present("position") {
+        if matches.is_present("loop") {
+            let mut arg = matches.value_of("loop").unwrap().replace("n", "no");
+            arg = arg.replace("y", "inf");
+            run_mpv_command(&mpv, "set_property", &["loop-file", &arg])
+                .expect("Could not set the loopback property.");
+        } else if matches.is_present("position") {
             run_mpv_command(&mpv, "set_property", &["percent-pos", matches.value_of("position").unwrap()])
                 .expect("Could not set the position, are you sure you used a valid percentage?");
         } else if matches.is_present("volume") {
