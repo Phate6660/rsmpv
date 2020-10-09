@@ -1,5 +1,5 @@
 [package]
-name = "mpvr"
+name = "rsmpv"
 version = "0.1.0"
 authors = ["Ash <valleyknight@protonmail.com>"]
 edition = "2018"
