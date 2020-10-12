@@ -21,6 +21,7 @@ SUBCOMMANDS:
     pause    Pause the current media in mpv
     play     Play the current media in mpv
     set      Set different options for mpv
+    toggle   Pause/play the current media in mpv
 ```
 
 `$ rsmpv set -h`

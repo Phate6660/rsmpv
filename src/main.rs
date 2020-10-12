@@ -5,6 +5,8 @@ fn main() {
     let matches = App::new("rsmpv")
         .version("0.0.1")
         .about("\nA controller for mpv written in Rust, requires ipc to be enabled in mpv.")
+        .subcommand(SubCommand::with_name("clear")
+            .about("Clear the current playlist in mpv"))
         .subcommand(SubCommand::with_name("pause")
             .about("Pause the current media in mpv"))
         .subcommand(SubCommand::with_name("play")
@@ -29,9 +31,14 @@ fn main() {
                 .help("Set the volume")
                 .value_name("PERCENTAGE")
                 .takes_value(true)))
+        .subcommand(SubCommand::with_name("toggle")
+            .about("Pause/play the current media in mpv"))
         .get_matches();
     let mpv = Mpv::connect("/tmp/mpvsocket").unwrap();
-    if matches.is_present("play") {
+    if matches.is_present("clear") {
+        run_mpv_command(&mpv, "clear-playlist", &[""])
+            .expect("Could not play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
+    } else if matches.is_present("play") {
         run_mpv_command(&mpv, "set_property", &["pause", "no"])
             .expect("Could not play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
     } else if matches.is_present("pause") {
@@ -50,5 +57,8 @@ fn main() {
             run_mpv_command(&mpv, "set_property", &["volume", matches.value_of("volume").unwrap()])
                 .expect("Could not set the volume, are you sure you used a valid percentage?");
         }
+    } else if matches.is_present("toggle") {
+        run_mpv_command(&mpv, "cycle", &["pause"])
+            .expect("Could not pause/play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
     }
 }
