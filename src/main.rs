@@ -7,10 +7,6 @@ fn main() {
         .about("\nA controller for mpv written in Rust, requires ipc to be enabled in mpv.")
         .subcommand(SubCommand::with_name("clear")
             .about("Clear the current playlist in mpv"))
-        .subcommand(SubCommand::with_name("pause")
-            .about("Pause the current media in mpv"))
-        .subcommand(SubCommand::with_name("play")
-            .about("Play the current media in mpv"))
         .subcommand(SubCommand::with_name("set")
             .about("Set different options for mpv")
             .arg(Arg::with_name("loop")
@@ -32,18 +28,20 @@ fn main() {
                 .value_name("PERCENTAGE")
                 .takes_value(true)))
         .subcommand(SubCommand::with_name("toggle")
-            .about("Pause/play the current media in mpv"))
+            .about("Toggle various settings in mpv")
+            .arg(Arg::with_name("state")
+                .short("s")
+                .long("state")
+                .help("Pause/play mpv"))
+            .arg(Arg::with_name("subtitles")
+                .short("S")
+                .long("subtitles")
+                .help("Enable/disable visibility of subtitles")))
         .get_matches();
     let mpv = Mpv::connect("/tmp/mpvsocket").unwrap();
     if matches.is_present("clear") {
         run_mpv_command(&mpv, "clear-playlist", &[""])
             .expect("Could not play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
-    } else if matches.is_present("play") {
-        run_mpv_command(&mpv, "set_property", &["pause", "no"])
-            .expect("Could not play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
-    } else if matches.is_present("pause") {
-        run_mpv_command(&mpv, "set_property", &["pause", "yes"])
-            .expect("Could not pause mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
     } else if let Some(matches) = matches.subcommand_matches("set") {
         if matches.is_present("loop") {
             let mut arg = matches.value_of("loop").unwrap().replace("n", "no");
@@ -57,8 +55,13 @@ fn main() {
             run_mpv_command(&mpv, "set_property", &["volume", matches.value_of("volume").unwrap()])
                 .expect("Could not set the volume, are you sure you used a valid percentage?");
         }
-    } else if matches.is_present("toggle") {
-        run_mpv_command(&mpv, "cycle", &["pause"])
-            .expect("Could not pause/play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
+    } else if let Some(matches) = matches.subcommand_matches("toggle") {
+        if matches.is_present("state") {
+            run_mpv_command(&mpv, "cycle", &["pause"])
+                .expect("Could not pause/play mpv, are you sure that the ipc-server is set to /tmp/mpvsocket?");
+        } else if matches.is_present("subtitles") {
+            run_mpv_command(&mpv, "cycle", &["sub-visibility"])
+                .expect("Could not enable/disable subtitle visibility, are you sure that the ipc-server is set to /tmp/mpvsocket?");
+        }
     }
 }

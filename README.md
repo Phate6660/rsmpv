@@ -17,11 +17,10 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    help     Prints this message or the help of the given subcommand(s)
-    pause    Pause the current media in mpv
-    play     Play the current media in mpv
-    set      Set different options for mpv
-    toggle   Pause/play the current media in mpv
+    clear     Clear the current playlist in mpv
+    help      Prints this message or the help of the given subcommand(s)
+    set       Set different options for mpv
+    toggle    Toggle various settings in mpv
 ```
 
 `$ rsmpv set -h`
@@ -40,6 +39,21 @@ OPTIONS:
     -l, --loop <y/n>               Enable or disable playback looping
     -p, --position <PERCENTAGE>    Set the position of media playback progress
     -v, --volume <PERCENTAGE>      Set the volume
+```
+
+`$ rsmpv toggle -h`
+```
+rsmpv-toggle
+Toggle various settings in mpv
+
+USAGE:
+    rsmpv toggle [FLAGS]
+
+FLAGS:
+    -h, --help         Prints help information
+    -s, --state        Pause/play mpv
+    -S, --subtitles    Enable/disable visibility of subtitles
+    -V, --version      Prints version information
 ```
 
 ## Roadmap
